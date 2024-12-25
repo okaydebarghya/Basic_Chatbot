@@ -1,0 +1,67 @@
+import random
+import re
+
+class Chatbot:
+    def __init__(self):
+        self.responses = {
+            "greeting": ["Hello! How can I assist you today?", "Hi there! What brings you here?", "Hey! How's it going?"],
+            "goodbye": ["Goodbye! Have a great day!", "See you later! Take care!", "It was nice chatting with you!"],
+            "thanks": ["You're welcome!", "No problem! Always happy to help!", "Glad to assist!"],
+            "feeling": ["I'm just a bot, but I'm here to make your day better!", "I don't have feelings, but I hope you're doing well!", "I'm feeling as functional as ever!"],
+            "help": ["Sure! What do you need help with?", "I'm here to assist you. Could you provide more details?", "Absolutely! Let me know how I can help."],
+            "default": ["I'm sorry, I didn't quite catch that.", "Could you rephrase that?", "I'm not sure what you mean, but I'm here to help!"]
+        }
+
+    def preprocess_input(self, user_input):
+        # Lowercase and clean user input
+        cleaned_input = re.sub(r'[^a-zA-Z0-9\s]', '', user_input.lower())
+        return cleaned_input
+
+    def get_response(self, processed_input):
+        # Match user input to categories
+        if re.search(r"hello|hi|hey", processed_input):
+            return random.choice(self.responses["greeting"])
+        elif re.search(r"bye|goodbye|see you", processed_input):
+            return random.choice(self.responses["goodbye"])
+        elif re.search(r"thank|thanks", processed_input):
+            return random.choice(self.responses["thanks"])
+        elif re.search(r"feel|feeling", processed_input):
+            return random.choice(self.responses["feeling"])
+        elif re.search(r"help|assist", processed_input):
+            return random.choice(self.responses["help"])
+        else:
+            return random.choice(self.responses["default"])
+
+    def provide_additional_context(self, user_input):
+        # Attempt to provide contextual responses for common queries
+        if "weather" in user_input:
+            return "I'm not equipped to check the weather, but I recommend using a weather app!"
+        elif "name" in user_input:
+            return "I'm just a humble chatbot without a name. What would you like to call me?"
+        elif "joke" in user_input:
+            return "Why don't scientists trust atoms? Because they make up everything!"
+        else:
+            return None
+
+    def chat(self):
+        print("Chatbot: Hi! I'm your chatbot. Type 'exit' to end the chat.")
+        while True:
+            user_input = input("You: ")
+            if user_input.lower() == 'exit':
+                print("Chatbot: Goodbye! Have a great day!")
+                break
+
+            processed_input = self.preprocess_input(user_input)
+            response = self.get_response(processed_input)
+
+            # Check for additional context
+            additional_context = self.provide_additional_context(user_input.lower())
+            if additional_context:
+                response += f" Also, {additional_context}"
+
+            print(f"Chatbot: {response}")
+
+# Run the chatbot
+if __name__ == "__main__":
+    chatbot = Chatbot()
+    chatbot.chat()
